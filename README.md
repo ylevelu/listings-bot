@@ -68,33 +68,33 @@ Get instant notifications about new trading pairs and upcoming listings directly
 git clone https://github.com/ylevelu/listings-bot.git
 cd listings-bot
 2. Install dependencies
-bash
+
 pip install -r requirements.txt
 If you don't have requirements.txt, create it:
 
-bash
+
 pip install requests python-telegram-bot feedparser beautifulsoup4 lxml
 3. Set up your credentials
 Create config_pkg/setting.py (this file is ignored by Git – your token stays safe):
 
-python
+
 TELEGRAM_TOKEN = "1234567890:ABCdef..."   # your bot token
 TELEGRAM_CHANNEL_ID = "@your_channel"     # or numeric ID like -1001234567890
 4. (Optional) Test Telegram connection
 Create a file test_send.py:
 
-python
+
 from notifier.telegram import send
 send("✅ Bot is ready!")
 Run it:
 
-bash
+
 python test_send.py
 Check your channel – you should see the message.
 
 ▶️ Usage
 Start the bot
-bash
+
 python main.py
 The bot will immediately begin its first check cycle – no Telegram messages will be sent yet, only local state files are created.
 
@@ -108,10 +108,9 @@ Linux/macOS: use nohup or screen / tmux.
 
 Example with nohup:
 
-bash
 nohup python3 main.py > bot.log 2>&1 &
 📁 Project Structure
-text
+
 crypto-listings-bot/
 │
 ├─ config_pkg/           # configuration package
@@ -143,43 +142,28 @@ crypto-listings-bot/
 ├─ main.py              # main bot loop
 ├─ requirements.txt     # dependencies
 └─ README.md            # this file
-📰 Announcements Parsing – How to Add More Exchanges
-The file parsers/announcements.py contains classes for each exchange that provides official listing news.
-To add a new source:
-
-Create a new class (e.g. KucoinAnnouncementParser).
-
-Implement get_new_announcements(self):
-
-Fetch the webpage / RSS feed.
-
-Parse relevant articles.
-
-Compare with previously sent IDs (store in data/).
-
-Return a list of announcement dictionaries.
-
-Include the parser in get_all_announcements().
-
-Example pattern – see existing parsers (Binance, Bybit, etc.) for reference.
-
-🛠 Customization
-Change check interval
-Edit CHECK_INTERVAL in main.py (default: 300 seconds = 5 minutes).
-
-Limit messages per cycle
-In run_once(), adjust all_messages[:50] – the maximum number of messages sent per cycle.
-
-Modify message format
-Edit functions in main.py:
-
-format_new_pair()
-
-format_delisting()
-
-format_announcement()
 
 ```
+
+## 📰 Announcements Parsing – How to Add More Exchanges
+#### The file parsers/announcements.py contains classes for each exchange that provides official listing news.
+#### To add a new source:
+
+##### Create a new class (e.g. KucoinAnnouncementParser).
+
+##### Implement get_new_announcements(self):
+
+##### Fetch the webpage / RSS feed.
+
+##### Parse relevant articles.
+
+##### Compare with previously sent IDs (store in data/).
+
+##### Return a list of announcement dictionaries.
+
+##### Include the parser in get_all_announcements().
+
+##### Example pattern – see existing parsers (Binance, Bybit, etc.) for reference.
 
 ## 📬 Contact
 #### Maintainer: Serhii
