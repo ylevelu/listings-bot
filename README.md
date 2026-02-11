@@ -75,7 +75,7 @@ If you don't have requirements.txt, create it:
 
 pip install requests python-telegram-bot feedparser beautifulsoup4 lxml
 3. Set up your credentials
-Create config_pkg/setting.py (this file is ignored by Git – your token stays safe):
+Create config_pkg/setting.py (this file is ignored by Git):
 
 
 TELEGRAM_TOKEN = "1234567890:ABCdef..."   # your bot token
