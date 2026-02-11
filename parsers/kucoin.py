@@ -1,22 +1,13 @@
-import requests
-from .base import BaseParser, Announcement
+# parsers/kucoin.py
+from .base import BaseParser
 
 class KucoinParser(BaseParser):
-    API = "https://www.kucoin.com/_api/cms/articles"
+    EXCHANGE_NAME = "KuCoin"
+    API_URL = "https://api.kucoin.com/api/v1/symbols"
 
-    def fetch(self):
-        r = requests.get(self.API, params={"page":1,"pageSize":20})
-        data = r.json()["items"]
-        results = []
-
-        for item in data:
-            title = item["title"].lower()
-            if "list" in title or "delist" in title:
-                category = "listing" if "list" in title else "delisting"
-                market = "futures" if "futures" in title else "spot"
-                url = f"https://www.kucoin.com/news/{item['id']}"
-
-                results.append(
-                    Announcement("KuCoin", item["title"], url, category, market)
-                )
-        return results
+    def _parse_response(self, data):
+        symbols = []
+        for s in data.get('data', []):
+            if s.get('enableTrading', False):
+                symbols.append(s['symbol'])
+        return symbols

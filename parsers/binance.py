@@ -1,25 +1,13 @@
-import requests
-from bs4 import BeautifulSoup
-from .base import BaseParser, Announcement
+# parsers/binance.py
+from .base import BaseParser
 
 class BinanceParser(BaseParser):
-    URL = "https://www.binance.com/en/support/announcement"
+    EXCHANGE_NAME = "Binance"
+    API_URL = "https://api.binance.com/api/v3/exchangeInfo"
 
-    def fetch(self):
-        r = requests.get(self.URL, timeout=10)
-        soup = BeautifulSoup(r.text, "html.parser")
-        results = []
-
-        for a in soup.select("a.css-1ej4hfo"):
-            title = a.text.lower()
-            url = "https://www.binance.com" + a["href"]
-
-            if "list" in title or "delist" in title:
-                category = "listing" if "list" in title else "delisting"
-                market = "futures" if "futures" in title else "spot"
-
-                results.append(
-                    Announcement("Binance", a.text, url, category, market)
-                )
-
-        return results
+    def _parse_response(self, data):
+        symbols = []
+        for s in data.get('symbols', []):
+            if s['status'] == 'TRADING':
+                symbols.append(s['symbol'])
+        return symbols

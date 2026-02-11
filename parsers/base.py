@@ -1,14 +1,18 @@
-from abc import ABC, abstractmethod
+# parsers/base.py
+import requests
 
-class Announcement:
-    def __init__(self, exchange, title, url, category, market_type):
-        self.exchange = exchange       # название биржи
-        self.title = title             # заголовок анонса
-        self.url = url                 # ссылка на статью
-        self.category = category       # listing / delisting
-        self.market_type = market_type # spot / futures
+class BaseParser:
+    EXCHANGE_NAME = "Base"
+    API_URL = ""
 
-class BaseParser(ABC):
-    @abstractmethod
-    def fetch(self) -> list[Announcement]:
-        pass
+    def fetch_listings(self):
+        try:
+            response = requests.get(self.API_URL, timeout=15)
+            response.raise_for_status()
+            return self._parse_response(response.json())
+        except Exception as e:
+            print(f"! {self.EXCHANGE_NAME} error: {e}")
+            return []
+
+    def _parse_response(self, data):
+        raise NotImplementedError
